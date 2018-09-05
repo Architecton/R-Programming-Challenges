@@ -98,4 +98,14 @@ get_times <- function(starting_length, step, num_steps, num_reps, search_func) {
 	return (measurements)
 }
 
-get_times(1000, 1000, 100, 10, linear_minmax)
+linear_results = get_times(1000, 1000, 100, 10, linear_minmax)
+# dc_results = get_times(1000, 1000, 100, 10, dc_minmax)
+
+# Plot data
+plot(
+	linear_results[,1],
+	linear_results[,2],
+	type='l',
+	xlab='Vector Length',
+	ylab='Run Time (ms)'
+)

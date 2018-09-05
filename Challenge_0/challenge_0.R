@@ -100,5 +100,5 @@ plot(
 	linear_search_times[,2],
 	type='l',
 	xlab='Vector Length',
-	ylab='Run Time'
+	ylab='Run Time (ms)'
 )
