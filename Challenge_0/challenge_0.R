@@ -29,7 +29,7 @@ binary_search <- function(el, vect) {
 	binary_search_aux <- function(el, vect, l, r) {
 		if (l <= r) {
 			# Compute index of midpoint of vector.
-			mid = l + (r - l) %/% 2 + 1
+			mid <- l + (r - l) %/% 2 + 1
 			# Compare midpoint element to sought element.
 			if (vect[mid] == el) {
 				return (mid) 		# If it matches, return its index.
@@ -54,17 +54,17 @@ binary_search <- function(el, vect) {
 get_times <- function(starting_length, step, num_steps, num_reps, search_func) {
 	
 	# Preallocate data matrix
-	measurements = matrix( , nrow = num_steps, ncol = 2)
-	measurement_index = 1
+	measurements <- matrix( , nrow = num_steps, ncol = 2)
+	measurement_index <- 1
 
 	# Go over applicable vector lengths.
 	for (n in seq(starting_length, starting_length + (step - 1) * num_steps, step)) {
 		
 		# Generate test vector
-		test_vect = generate_vector(n)
+		test_vect <- generate_vector(n)
 
 		# Start timer
-		start_time = as.numeric(format(Sys.time(), "%OS3")) * 1000
+		start_time <- as.numeric(format(Sys.time(), "%OS3")) * 1000
 
 		# Run the algorithm num_reps times.
 		for (rep in 1:num_reps) {
@@ -73,16 +73,16 @@ get_times <- function(starting_length, step, num_steps, num_reps, search_func) {
 		}
 
 		# Stop timer.
-		end_time = as.numeric(format(Sys.time(), "%OS3")) * 1000
+		end_time <- as.numeric(format(Sys.time(), "%OS3")) * 1000
 
 		# Make a vector representing a measurement.
-		measurement = c(n, (end_time - start_time) / num_reps)
+		measurement <- c(n, (end_time - start_time) / num_reps)
 
 		# Add measurement to matrix of measurements
-		measurements[measurement_index, ] = measurement
+		measurements[measurement_index, ] <- measurement
 
 		# Increment index of current measurement.
-		measurement_index = measurement_index + 1
+		measurement_index <- measurement_index + 1
 	}
 
 	# Return matrix of measurements.
