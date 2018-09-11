@@ -38,36 +38,56 @@ execute_command <- function(command) {
 	)
 }
 
+# Complex Number Parsing ################################################################################################################
+
 # parse_num: parse complex number from terminal and return parsed complex number
 # THOROUGH INPUT CHECKING IS NOT IMPLEMENTED.
 parse_num <- function() {
-	valid <- FALSE
-	while(!valid) {
-		# Read input and remove whitespace. Replace 
-		raw_in <- readLines("stdin", 1)
-		trimmed <- gsub(" ", "", raw_in, fixed = TRUE)
-		trimmed <- gsub("+", ",", trimmed, fixed = TRUE)
-		trimmed <- gsub("-", ",-", trimmed, fixed = TRUE)
-		trimmed <- gsub("i", "", trimmed, fixed = TRUE)
+	# Parse raw user input.
+	raw_in <- readLines("stdin", 1)
 
-		components <- strsplit(trimmed, split=",", fixed=TRUE)[[1]]
-		components <- as.numeric(components)
-		if(length(components) != 2) {
-			print("Could not parse input. Please try again.")
-		} else {
-			names(components) <- c("real", "imaginary")
+	# Remove all whitespace
+	trimmed_in <- gsub(" ", "", raw_in, fixed = TRUE)
 
+	# Define starting sign and assign initial value.
+	start_sign <- ""
 
-			if (!is.na(components["real"]) && !is.na(components["imaginary"])) {
-				valid <- TRUE
-				return (complex(real = components["real"], imaginary = components["imaginary"]))
-			} else {
-				print("Could not parse input. Please try again.")		
-			}
-		}
+	# Check if number starts with sign.
+	if(substr(trimmed_in, 1, 1) == "+" || substr(trimmed_in, 1, 1) == "-") {
+		# The sign of real part is the first character in trimmed input.
+		start_sign <- substr(trimmed_in, 1, 1)
+		# Start parsing magnitude from second position (after sign).
+		start_re <- 2
+		# End parsing real part magnitude just before sign of imaginary part.
+		end_re <- regexpr("[+-]", substr(trimmed_in, 2, nchar(trimmed_in)))[1]
+		# Start parsing imaginary part from second sign.
+		start_im <- end_re + 1
+		# End parsing imaginary part magnitude just before 'i'.
+		end_im <- nchar(trimmed_in) - 1
+
+	} else {
+	# Else number does not start with a sign (implicitly positive)
+		start_sign <- "+"
+		# Start parsing from beginning.
+		start_re <- 1
+		# Similar as in if bloc.
+		end_re <- regexpr("[+-]", trimmed_in)[1] - 1
+		start_im <- end_re + 1
+		end_im <- nchar(trimmed_in) - 1
 	}
+
+	# Get components of parsed complex number and name them.
+	components <- c(paste(start_sign, substr(trimmed_in, start_re, end_re), sep = ""), substr(trimmed_in, start_im, end_im))
+	components <- as.numeric(components)
+	names(components) <- c("real", "imaginary")
+
+	# Return parsed complex number.
+	return(complex(real = components["real"], imaginary = components["imaginary"]))
 }
 
+#########################################################################################################################################
+
+# Calculator arithmetic functionality implementation ####################################################################################
 
 # addition: add two complex numbers and return result.
 addition <- function() {
@@ -79,6 +99,10 @@ addition <- function() {
 	# Return sum of parsed numbers.
 	return (num1 + num2)
 }
+
+#########################################################################################################################################
+
+# The main loop #########################################################################################################################
 
 # While user does not enter a blank line...
 while (next_line != "") {
@@ -103,3 +127,4 @@ while (next_line != "") {
 	}
 }
 
+#########################################################################################################################################
