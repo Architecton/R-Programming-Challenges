@@ -26,15 +26,116 @@ next_line <- " "
 commands = c("+", "-", "*", "/", "w")
 names(commands) <- c("plus", "minus", "times", "div", "pru")
 
+# Calculator arithmetic functionality implementation ####################################################################################
+
+# addition: add two complex numbers and return result.
+addition <- function() {
+	# Read and parse first number.
+	num1 <- parse_num() # TODO
+	# Read and parse second number.
+	num2 <- parse_num()
+
+	# Return sum of parsed numbers.
+	return (num1 + num2)
+}
+
+# subtraction: subtract two complex numbers and return result.
+subtraction <- function() {
+	# Read and parse first number.
+	num1 <- parse_num()
+	# Read and parse second number.
+	num2 <- parse_num()
+
+	# Return difference of parsed numbers.
+	return (num1 - num2)
+}
+
+# multiplication: multiply two complex numbers and return result.
+multiplication <- function() {
+	# Read and parse first number.
+	num1 <- parse_num()
+	# Read and parse second number.
+	num2 <- parse_num()
+
+	# Return product of parsed numbers.
+	return (num1 * num2)	
+}
+
+# division: divide two complex numbers and return result.
+division <- function() {
+	# Read and parse first number.
+	num1 <- parse_num()
+	# Read and parse second number.
+	num2 <- parse_num()
+
+	# Return quotient of parsed numbers.
+	return (num1 / num2)	
+}
+
+# principal_square_root: compute n-th principal root and all its powers.
+principal_root <- function() {
+
+	# Set initial value for n (specifying which principal root of unity to take)
+	n <- -1
+
+	# While n has signal value indicating invalidity...
+	while(n == -1) {
+		# Parse n.
+		n <- parse_n()
+		# Check n for validity.
+		if (n == -1) {
+			print("Invalid argument. Please try again.")
+		}
+	}
+
+	# Go over valid powers.
+	for(k in 1:n) {
+
+		# Izracunaj realni in kompleksni del stevila
+		# Compute the real and imaginary parts of the complex numbers.
+		re <- cos((k/n)*2*pi);
+		im <- sin((k/n)*2*pi);
+
+		# Check if any part below threshold.
+		if(abs(im) < 1e-6) {
+			im <- 0
+		}
+
+		if(abs(re) < 1e-6) {
+			re <- 0
+		}
+
+		# Construct complex number.
+		res <- complex(real = re, imaginary = im);
+
+		# Handle rounding errors.
+		if (abs(im) > 0.000009) {
+			cat(res)
+		} else {
+			cat(Re(res))
+		}
+		
+		# If another power follows, separate with space
+		if (k < n) {
+			cat(" ");
+		} else {
+			cat('\n')
+		}
+	}
+}
+
+
+#########################################################################################################################################
+
 # execute_command: execute functionality specified by command argument.
 execute_command <- function(command) {
 	# Switch on command.
 	switch(command,
-		plus = return (addition())
-		# minus = print("-"),
-		# times = print("*"),
-		# div = print("/"),
-		# pru = print("w")
+		plus = return (addition()),
+		minus = return (subtraction()),
+		times = return (multiplication()),
+		div = return (division()),
+		pru = return (principal_root())
 	)
 }
 
@@ -85,19 +186,18 @@ parse_num <- function() {
 	return(complex(real = components["real"], imaginary = components["imaginary"]))
 }
 
-#########################################################################################################################################
-
-# Calculator arithmetic functionality implementation ####################################################################################
-
-# addition: add two complex numbers and return result.
-addition <- function() {
-	# Read and parse first number.
-	num1 <- parse_num() # TODO
-	# Read and parse second number.
-	num2 <- parse_num()
-
-	# Return sum of parsed numbers.
-	return (num1 + num2)
+# parse_n: auxiliary function used for parsing the argument needed for the principal root functionality.
+parse_n <- function() {
+	# Read raw input.
+	raw_in <- readLines("stdin", 1)
+	trimmed_in <- gsub(" ", "", raw_in, fixed = TRUE) 	# Trim whitespace.
+	converted <- as.numeric(trimmed_in)					# Convert processed input to numeric type.
+	print(converted)
+	if(!is.na(converted)) {						  		# Check for validity.
+		return (converted)
+	} else {
+		return (-1) 								  # If input is not valid, return signal value.
+	}
 }
 
 #########################################################################################################################################
@@ -118,7 +218,12 @@ while (next_line != "") {
 	if(next_line %in% commands) {
 		# Get result.
 		result <- execute_command(names(which(commands == next_line)))
-		print(result)
+
+		# Print result (except for the principal root powers command).
+		if(next_line != "w") {
+			print(result)	
+		}
+		
 
 	} else if (next_line == "") {
 		# Do nothing - quit program
