@@ -110,9 +110,9 @@ principal_root <- function() {
 
 		# Handle rounding errors.
 		if (abs(im) > 0.000009) {
-			cat(res)
+			cat(round(res, 5))
 		} else {
-			cat(Re(res))
+			cat(round(Re(res), 5))
 		}
 		
 		# If another power follows, separate with space
@@ -192,7 +192,6 @@ parse_n <- function() {
 	raw_in <- readLines("stdin", 1)
 	trimmed_in <- gsub(" ", "", raw_in, fixed = TRUE) 	# Trim whitespace.
 	converted <- as.numeric(trimmed_in)					# Convert processed input to numeric type.
-	print(converted)
 	if(!is.na(converted)) {						  		# Check for validity.
 		return (converted)
 	} else {
@@ -221,7 +220,7 @@ while (next_line != "") {
 
 		# Print result (except for the principal root powers command).
 		if(next_line != "w") {
-			print(result)	
+			print(round(result, 5))
 		}
 		
 
